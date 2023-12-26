@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { generateUsers } from './data'
+import { useState, useCallback, useEffect } from 'react'
+import { ReactVirtualizedTable } from './table'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [users, setUsers] = useState(() => [])
+
+  const loadMore = useCallback(() => {
+    return setTimeout(() => {
+      setUsers((users) => [...users, ...generateUsers(100, users.length)])
+    }, 200)
+  }, [setUsers])
+
+  useEffect(() => {
+    const timeout = loadMore()
+    return () => clearTimeout(timeout)
+  }, [])
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      {/* <h3>Test</h3> */}
+      <ReactVirtualizedTable endReached={loadMore} data={users} />
+      {/* <Virtuoso
+        style={{ height: 300, width: 500 }}
+        data={users}
+        endReached={loadMore}
+        overscan={200}
+        itemContent={(index, user) => {
+          return <div style={{ backgroundColor: user.bgColor }}>{user.name}</div>
+        }}
+        components={{ Footer }}
+      /> */}
+    </div>
   )
 }
 
-export default App
+
+const Footer = () => {
+  return (
+    <div
+      style={{
+        padding: '2rem',
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      Loading...
+    </div>
+  )
+}
