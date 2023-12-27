@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import { TableVirtuoso } from 'react-virtuoso';
 
 
-const columns = [
+export const columns = [
     {
         width: 30,
         label: '#',

@@ -1,15 +1,21 @@
 import './App.css'
 import { generateUsers } from './data'
-import { useState, useCallback, useEffect } from 'react'
-import { ReactVirtualizedTable } from './table'
+import { ReactVirtualizedTable, columns } from './components/table'
+import { useState, useEffect, useCallback } from "react";
+import Box from "@mui/material/Box";
+import Export from './components/Export';
+import Toolbar from './components/Toolbar';
+
+import { SettingsProvider } from './components/SettingsContext';
+
 
 export default function App() {
   const [users, setUsers] = useState(() => [])
 
   const loadMore = useCallback(() => {
     return setTimeout(() => {
-      setUsers((users) => [...users, ...generateUsers(100, users.length)])
-    }, 200)
+      setUsers((users) => [...users, ...generateUsers(10, users.length)])
+    }, 100)
   }, [setUsers])
 
   useEffect(() => {
@@ -18,34 +24,14 @@ export default function App() {
   }, [])
 
   return (
-    <div>
-      {/* <h3>Test</h3> */}
-      <ReactVirtualizedTable endReached={loadMore} data={users} />
-      {/* <Virtuoso
-        style={{ height: 300, width: 500 }}
-        data={users}
-        endReached={loadMore}
-        overscan={200}
-        itemContent={(index, user) => {
-          return <div style={{ backgroundColor: user.bgColor }}>{user.name}</div>
-        }}
-        components={{ Footer }}
-      /> */}
-    </div>
-  )
-}
+    <SettingsProvider>
+      <Box >
+        <Toolbar>
+          <Export data={users} headers={columns.map((column) => ({ "label": column.label, "key": column.dataKey }))} />
+        </Toolbar>
 
-
-const Footer = () => {
-  return (
-    <div
-      style={{
-        padding: '2rem',
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      Loading...
-    </div>
+        <ReactVirtualizedTable endReached={loadMore} data={users} />
+      </Box >
+    </SettingsProvider >
   )
 }
