@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer } from 'react';
+import defaultSetting from '../defaultSettings';
 
 const SettingsContext = createContext(null);
 
@@ -7,7 +8,7 @@ const SettingsDispatchContext = createContext(null);
 export function SettingsProvider({ children }) {
   const [settings, dispatch] = useReducer(
     settingsReducer,
-    initialSettings
+    defaultSetting
   );
 
   return (
@@ -30,7 +31,7 @@ export function useSettingsDispatch() {
 function settingsReducer(settings, action) {
   switch (action.type) {
     case 'setErrors': {
-      return { ...settings, errors: action.value };
+      return { ...settings, errorsCount: action.value };
     }
     case 'setSeed': {
       return { ...settings, seed: action.value };
@@ -45,9 +46,4 @@ function settingsReducer(settings, action) {
   }
 }
 
-const initialSettings =
-{
-  errors: 0,
-  region: 'en',
-  seed: 666,
-};
+

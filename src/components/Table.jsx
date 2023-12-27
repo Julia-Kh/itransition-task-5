@@ -17,12 +17,13 @@ export const columns = [
         numeric: true,
     },
     {
-        width: 120,
+        width: 200,
         label: 'ID',
         dataKey: 'id',
+        numeric: true,
     },
     {
-        width: 200,
+        width: 150,
         label: 'Full name',
         dataKey: 'name',
     },
@@ -89,7 +90,7 @@ function rowContent(_index, row) {
 
 export function ReactVirtualizedTable({ data, endReached }) {
     return (
-        <Paper style={{ height: 800, width: '100%' }}>
+        <Paper style={{ height: '80vh', width: '100%' }}>
             <TableVirtuoso
                 data={data}
                 endReached={endReached}

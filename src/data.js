@@ -1,18 +1,18 @@
-import { fakerEN, fakerAF_ZA, fakerRU, fakerTR, fakerFR, fakerKA_GE } from '@faker-js/faker';
+import { fakerEN_CA, fakerDE_AT, fakerPT_PT } from '@faker-js/faker';
 
-export const locales = {
-    'ru': 'Russia',
-    'ge': 'Georgia',
-    'fr': 'France',
+const locales = {
+    'de_AT': { title: 'Austria', lib: fakerDE_AT },
+    'en_CA': { title: 'Canada', lib: fakerEN_CA },
+    'pt_PT': { title: 'Portugal', lib: fakerPT_PT },
 }
 
-
-const faker = fakerRU
-faker.seed(1234);
+export const availableLocales = Object.entries(locales).map(([key, value]) => ({ title: value.title, value: key }))
+// const faker = fakerRU
 
 const generated = []
+const generatedSettings = {}
 
-function address() {
+function address(faker) {
     const randomAddress = {
         street: faker.location.streetAddress(),
         city: faker.location.city(),
@@ -26,26 +26,39 @@ function address() {
     return fullAddress
 }
 
-export function user(index = 0) {
+function user(index = 0, faker) {
 
     return {
         index: index + 1,
         name: faker.person.fullName(),
         phone: faker.phone.number(),
-        address: address(),
+        address: address(faker),
         id: faker.string.uuid(),
     }
 }
 
-export const getUser = (index) => {
+const getUser = (index, faker) => {
     if (!generated[index]) {
-        generated[index] = user(index)
+        generated[index] = user(index, faker)
     }
 
     return generated[index]
 }
 
 
-export function generateUsers(length, startIndex = 0, seed, region, errors) {
-    return Array.from({ length }).map((_, i) => getUser(i + startIndex))
+export function generateUsers(length, startIndex = 0, settings) {
+    if (JSON.stringify(settings) !== JSON.stringify(generatedSettings)) {
+        console.log('changing settings', settings, generatedSettings)
+
+        for (const [key, value] of Object.entries(settings)) {
+            generated.length = 0
+            generatedSettings[key] = value;
+        }
+
+    }
+
+    const faker = locales[settings.region].lib;
+    faker.seed(settings.seed + startIndex);
+
+    return Array.from({ length }).map((_, i) => getUser(i + startIndex, faker))
 }
