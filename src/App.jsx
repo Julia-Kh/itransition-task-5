@@ -1,6 +1,6 @@
 import './App.css'
 import { generateUsers, availableLocales } from './data'
-import { ReactVirtualizedTable, columns } from './components/table'
+import { ReactVirtualizedTable, columns } from './components/Table'
 import { useState, useEffect, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Export from './components/Export';
